@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MainTabType: CaseIterable {
+enum MainTabType: String, CaseIterable {
     case home
     case chat
     case phone
@@ -21,5 +21,9 @@ enum MainTabType: CaseIterable {
         case .phone:
             return "통화"
         }
+    }
+    
+    func imageName(selected: Bool) -> String {
+        return selected ? "\(rawValue)_fill" : rawValue
     }
 }

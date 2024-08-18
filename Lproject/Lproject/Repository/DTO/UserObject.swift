@@ -1,13 +1,13 @@
 //
-//  User.swift
+//  UserObject.swift
 //  Lproject
 //
-//  Created by Jaehwi Kim on 2024/08/13.
+//  Created by Jaehwi Kim on 8/18/24.
 //
 
 import Foundation
 
-struct User {
+struct UserObject: Codable {
     var id: String
     var name: String
     var phoneNumber: String?
@@ -15,8 +15,8 @@ struct User {
     var description: String?
 }
 
-extension User {
-    func toObject() -> UserObject {
+extension UserObject {
+    func toModel() -> User {
         .init(
             id: id,
             name: name,
@@ -24,15 +24,5 @@ extension User {
             profileURL: profileURL,
             description: description
         )
-    }
-}
-
-extension User {
-    static var stub1: User {
-        .init(id: "user1_id", name: "김재휘")
-    }
-    
-    static var stub2: User {
-        .init(id: "user2_id", name: "안유진")
     }
 }
