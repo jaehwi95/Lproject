@@ -14,6 +14,7 @@ class HomeViewModel: ObservableObject {
         case requestContacts
         case presentMyProfileView
         case presentOtherProfileView(String)
+        case goToChat(User)
     }
     
     @Published var myUser: User?
@@ -23,10 +24,12 @@ class HomeViewModel: ObservableObject {
     
     var userId: String
     private var container: DIContainer
+    private var navigationRouter: NavigationRouter
     private var subscriptions = Set<AnyCancellable>()
     
-    init(container: DIContainer, userId: String) {
+    init(container: DIContainer, navigationRouter: NavigationRouter, userId: String) {
         self.container = container
+        self.navigationRouter = navigationRouter
         self.userId = userId
     }
     
@@ -52,6 +55,7 @@ class HomeViewModel: ObservableObject {
                 .store(in: &subscriptions)
         case .requestContacts:
             container.services.contactService.fetchContacts()
+                .subscribe(on: DispatchQueue.global())
                 .flatMap { users in
                     self.container.services.userService.addUserAftercontact(users: users)
                 }
@@ -70,6 +74,16 @@ class HomeViewModel: ObservableObject {
             modalDestination = .myProfile
         case let .presentOtherProfileView(userId):
             modalDestination = .otherProfile(userId)
+        case let .goToChat(otherUser):
+            // 체팅방 존재 확인, 없으면 생성 / 있으면 방 열기
+            container.services.chatRoomService.createChatRoomIfNeeded(myUserId: userId, otherUserId: otherUser.id, otherUserName: otherUser.name)
+                .sink { completion in
+                    
+                } receiveValue: { [weak self] chatRoom in
+                    guard let `self`  = self else { return }
+                    self.navigationRouter.push(to: .chat(chatRoomId: chatRoom.chatRoomId, myUserId: self.userId, otherUserId: otherUser.id))
+                }
+                .store(in: &subscriptions)
         }
     }
 }

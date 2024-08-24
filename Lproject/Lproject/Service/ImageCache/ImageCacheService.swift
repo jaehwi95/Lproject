@@ -24,7 +24,7 @@ class ImageCacheService: ImageCacheServiceType {
     func image(for key: String) -> AnyPublisher<UIImage?, Never> {
         /*
             1. memory storage 확인
-            2. disk sotrage 확인
+            2. disk storage 확인
             3. url session 으로 가져와 각각 넣어줌
          */
         imageWithMemoryCache(for: key)
@@ -57,7 +57,12 @@ class ImageCacheService: ImageCacheServiceType {
         }
         .flatMap { image -> AnyPublisher<UIImage?, Never> in
             if let image {
-                return Just(image).eraseToAnyPublisher()
+                return Just(image)
+                    .handleEvents(receiveOutput: { [weak self] image in
+                        guard let image else { return }
+                        self?.store(for: key, image: image, toDisk: false)
+                    })
+                    .eraseToAnyPublisher()
             } else {
                 // Network 통신
                 return self.remoteImage(for: key)
@@ -72,9 +77,19 @@ class ImageCacheService: ImageCacheServiceType {
                 UIImage(data: data)
             }
             .replaceError(with: nil)
+            .handleEvents(receiveOutput: { [weak self] image in
+                guard let image else { return }
+                self?.store(for: urlString, image: image, toDisk: true)
+            })
             .eraseToAnyPublisher()
     }
     
+    func store(for key: String, image: UIImage, toDisk: Bool) {
+        memoryStorage.store(for: key, image: image)
+        if toDisk {
+            try? diskStorage.store(for: key, image: image)
+        }
+    }
 }
 
 class StubImageCacheService: ImageCacheServiceType {
