@@ -14,7 +14,7 @@ extension Color {
     static let blackFix: Color = .init("black-fix")
     static let chatBg: Color = .init("chat-bg")
     static let chatColorMe: Color = .init("chat-color-me")
-    static let chatColorOhter: Color = .init("chat-color-ohter")
+    static let chatColorOther: Color = .init("chat-color-other")
     static let chatNotice: Color = .init("chat-notice")
     static let coralBg: Color = .init("coral_bg")
     static let greyCool: Color = .init("grey-cool")

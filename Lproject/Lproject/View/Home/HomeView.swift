@@ -29,12 +29,7 @@ struct HomeView: View {
                     }
                 }
                 .navigationDestination(for: NavigationDestination.self) {
-                    switch $0 {
-                    case .chat:
-                        ChatView()
-                    case .search:
-                        SearchView()
-                    }
+                    NavigationRoutingView(destination: $0)
                 }
         }
     }
