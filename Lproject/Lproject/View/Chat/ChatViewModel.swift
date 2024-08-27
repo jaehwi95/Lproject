@@ -16,6 +16,7 @@ class ChatViewModel: ObservableObject {
     @Published var chatDataList: [ChatData] = []
     @Published var myUser: User?
     @Published var otherUser: User?
+    @Published var message: String = ""
     
     private let chatRoomId: String
     private let myUserId: String
@@ -39,6 +40,10 @@ class ChatViewModel: ObservableObject {
             let newChatData: ChatData = .init(dateString: key, chats: [chat])
             chatDataList.append(newChatData)
         }
+    }
+    
+    func getDirection(id: String) -> ChatItemDirection {
+        myUserId == id ? .right : .left
     }
     
     func send(action: Action) {

@@ -13,9 +13,10 @@ struct ChatItemView: View {
     let date: Date
     
     var body: some View {
-        HStack {
+        HStack(alignment: .bottom) {
             if direction == .right {
                 Spacer()
+                dateView
             }
             Text(message)
                 .font(.system(size: 14))
@@ -28,6 +29,7 @@ struct ChatItemView: View {
                     direction.overlayImage
                 }
             if direction == .left {
+                dateView
                 Spacer()
             }
         }
@@ -35,7 +37,9 @@ struct ChatItemView: View {
     }
     
     var dateView: some View {
-        EmptyView()
+        Text(date.toChatTime)
+            .font(.system(size: 10))
+            .foregroundColor(.greyDeep)
     }
 }
 

@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct ChatData: Hashable {
+struct ChatData: Hashable, Identifiable {
     var dateString: String
     var chats: [Chat]
+    var id: String { dateString }
 }
